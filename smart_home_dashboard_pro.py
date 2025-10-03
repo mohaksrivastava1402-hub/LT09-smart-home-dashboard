@@ -27,13 +27,15 @@ def add_helpers(df):
     df.columns = [c.strip() for c in df.columns]
     if "Month" in df.columns:
         df["Month"] = coerce_month(df["Month"])
+    # Calculated fields
     if "Monthly Revenue (USD)" in df.columns and "Marketing Spend (USD)" in df.columns:
         den = df["Marketing Spend (USD)"].replace(0, np.nan)
         df["Revenue per Marketing $"] = df["Monthly Revenue (USD)"] / den
-    if "Active Users" in df.columns and "Monthly Revenue (USD)"]:
+    if "Active Users" in df.columns and "Monthly Revenue (USD)" in df.columns:
         den2 = df["Active Users"].replace(0, np.nan)
         df["Revenue per Active User"] = df["Monthly Revenue (USD)"] / den2
     return df
+
 
 @st.cache_data
 def load_sheets(xls):
