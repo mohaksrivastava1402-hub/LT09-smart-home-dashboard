@@ -37,7 +37,7 @@ def add_helpers(df):
     return df
 
 
-@st.cache_data
+
 def load_sheets(xls):
     sheet_names = xls.sheet_names
     dfs = {name: pd.read_excel(xls, sheet_name=name) for name in sheet_names}
