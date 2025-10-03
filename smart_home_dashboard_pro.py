@@ -145,22 +145,27 @@ m = st.selectbox("Metric", ts_metrics, index=default_ts_idx, key="ts_metric")
         st.plotly_chart(fig, use_container_width=True)
 
 with tab2:
+    with tab2:
     num_cols = [c for c in [
         "Active Users","Conversion Rate (%)","Marketing Spend (USD)",
         "Monthly Revenue (USD)","Customer Satisfaction (1-5)","Retention Rate (%)",
         "Revenue per Marketing $","Revenue per Active User"
     ] if c in f.columns]
+
     c1, c2 = st.columns(2)
     with c1:
         x_idx = num_cols.index(x_default) if x_default in num_cols else 0
-x = st.selectbox("X", num_cols, index=x_idx)
+        x = st.selectbox("X", num_cols, index=x_idx)
     with c2:
         y_idx = num_cols.index(y_default) if y_default in num_cols else 0
-y = st.selectbox("Y", num_cols, index=y_idx)
-    color = "Product" if ("Product" in f.columns and (selected_products is None or len(selected_products)!=1)) else None
+        y = st.selectbox("Y", num_cols, index=y_idx)
+
+    # ⬇️ These lines must be OUTSIDE the 'with' blocks (same indent as c1,c2)
+    color = "Product" if ("Product" in f.columns and (selected_products is None or len(selected_products) != 1)) else None
     fig2 = px.scatter(f, x=x, y=y, color=color, trendline="ols")
-    fig2.update_layout(height=420, margin=dict(l=10,r=10,t=40,b=10))
+    fig2.update_layout(height=420, margin=dict(l=10, r=10, t=40, b=10))
     st.plotly_chart(fig2, use_container_width=True)
+
 
 with tab3:
     bullets = []
