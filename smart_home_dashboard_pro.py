@@ -82,6 +82,17 @@ with st.sidebar:
 
     st.header("Presets")
     preset = st.radio("View", ["Efficiency", "Growth", "Customer Experience"], index=0)
+    # --- PRESET behavior (defaults for charts) ---
+if preset == "Efficiency":
+    ts_default = "Revenue per Marketing $"
+    x_default, y_default = "Marketing Spend (USD)", "Monthly Revenue (USD)"
+elif preset == "Growth":
+    ts_default = "Monthly Revenue (USD)"
+    x_default, y_default = "Active Users", "Conversion Rate (%)"
+else:  # Customer Experience
+    ts_default = "Customer Satisfaction (1-5)"
+    x_default, y_default = "Customer Satisfaction (1-5)", "Retention Rate (%)"
+
 
 f = df.copy()
 if selected_products:
@@ -121,7 +132,9 @@ with tab1:
         "Revenue per Marketing $","Revenue per Active User"
     ] if c in f.columns]
     if ts_metrics and "Month" in f.columns:
-        m = st.selectbox("Metric", ts_metrics, index=0, key="ts_metric")
+       default_ts_idx = ts_metrics.index(ts_default) if ts_default in ts_metrics else 0
+m = st.selectbox("Metric", ts_metrics, index=default_ts_idx, key="ts_metric")
+
         color = "Product" if ("Product" in f.columns and (selected_products is None or len(selected_products)!=1)) else None
         fig = px.line(f.sort_values("Month"), x="Month", y=m, color=color, markers=True)
         if m == "Conversion Rate (%)":
@@ -139,9 +152,11 @@ with tab2:
     ] if c in f.columns]
     c1, c2 = st.columns(2)
     with c1:
-        x = st.selectbox("X", num_cols, index=num_cols.index("Marketing Spend (USD)") if "Marketing Spend (USD)" in num_cols else 0)
+        x_idx = num_cols.index(x_default) if x_default in num_cols else 0
+x = st.selectbox("X", num_cols, index=x_idx)
     with c2:
-        y = st.selectbox("Y", num_cols, index=num_cols.index("Monthly Revenue (USD)") if "Monthly Revenue (USD)" in num_cols else 0)
+        y_idx = num_cols.index(y_default) if y_default in num_cols else 0
+y = st.selectbox("Y", num_cols, index=y_idx)
     color = "Product" if ("Product" in f.columns and (selected_products is None or len(selected_products)!=1)) else None
     fig2 = px.scatter(f, x=x, y=y, color=color, trendline="ols")
     fig2.update_layout(height=420, margin=dict(l=10,r=10,t=40,b=10))
